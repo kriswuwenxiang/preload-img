@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>图片预加载-无序加载</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    a {
+      text-decoration: none;
+    }
+    img {
+      max-width: 1200px;
+    }
+    .box {
+      text-align: center;
+    }
+    .box a {
+      display: inline-block;
+      height: 30px;
+      line-height: 30px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      padding: 0 10px;
+      margin-right: 50px;
+      color: #333;
+      cursor: pointer;
+    }
+    .box a:hover {
+      background-color: #eee;
+    }
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #eee;
+      text-align: center;
+      font-size: 30px;
+      padding-top: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <p id="curTotal"></p>
+    <img src="./img/bg/1.jpg" width="100%" />
+    <p>
+      <a data-btn="prev">上一页</a>
+      <a data-btn="next">下一页</a>
+    </p>
+  </div>
+  <div class="progress">0%</div>
+
+  <script src="./js/jquery.min.js"></script>
+  <script src="./js/preload.js"></script>
+  <script>
+    var imgs = [];// 加载图片路径数组
+    for(var i=1; i<=4; i++) {
+      imgs.push('./img/bg/'+ i +'.jpg');
+    }
+
+    var index = 0,// 当前显示第index张图片
+        len = imgs.length,// 总的图片个数
+        $curTotal = $('#curTotal');// 当前图片/总图片数
+
+    $('.box a').on('click', function(event) {
+      event.preventDefault();// 阻止a标签默认的行为
+      if ($(this).data('btn') === 'prev') {// 上一页
+        index = Math.max(0, --index);
+      } else {// 下一页
+        index = Math.min(len - 1, ++index);
+      }
+      $curTotal.text((index + 1) + '/' + len);
+      $('img').attr('src', imgs[index]);//替换图片
+    });
+
+    $.preload(imgs,{
+      each: function(count) {
+        $('.progress').text(Math.round((count + 1) / len * 100) + '%');
+      },
+      all: function() {
+        $('.progress').hide();
+        $curTotal.text('1/' + len);
+      }
+    });
+  </script>
+</body>
+</html>
