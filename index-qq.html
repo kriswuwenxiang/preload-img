@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>图片预加载-QQ表情</title>
+  <style>
+    body, p, ul, li {
+      padding: 0;
+      margin: 0;
+    }
+    body {
+      background-color: #eee;
+    }
+    a{
+      color: #333;
+      text-decoration: none;
+    }
+    li {
+      list-style-type: none;
+    }
+    .box {
+      margin: 20px 0 0 20px;
+    }
+    .panel {
+      display: none;
+      width: 600px;
+      padding: 2px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+    .loading {
+      text-align: center;
+    }
+    .list li {
+      border: 1px solid #fff;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .list li:hover {
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <a href="javascript:;">QQ表情</a>
+    <img id="imgSel" src="" style="display: none" />
+    <div class="panel">
+      <p class="loading">
+        表情加载中，请稍后。。。
+      </p>
+    </div>
+  </div>
+
+  <script src="js/jquery.min.js"></script>
+  <script src="js/preload.js"></script>
+  <script>
+    var imgs = []; //加载图片路径数组
+    for(var i=1; i<=129; i++) {
+      imgs.push('./img/qq/'+ i +'.gif');
+    }
+
+    var $panel = $('.panel'),
+        $imgSel = $('#imgSel'),
+        len = imgs.length; //总的图片个数
+
+    $('.box a').on('click', function(event) {
+      event.preventDefault(); //阻止a标签默认的行为
+      event.stopPropagation(); //阻止冒泡事件
+      $panel.show();
+      $.preload(imgs, {
+        all: function() {
+          var html = "";
+          html += '<ul class="list">';
+          for(var i=0; i<len; i++) {
+            html += '<li><img src="' + imgs[i] + '" alt="" /></li>';
+          }
+          html += '</ul>';
+          setTimeout(function() {
+            $panel.html(html);
+          }, 0);
+        }
+      })
+    });
+
+    $panel.on('click', 'img', function(event) {
+      event.stopPropagation(); //阻止冒泡事件
+      $imgSel.attr('src', this.src).show(); //显示选中表情
+      $panel.hide();
+    });
+
+    $(document).on('click', function() {
+      $panel.click(function() {
+        return false;
+      })
+      $panel.hide();
+    });
+  </script>
+</body>
+</html>
