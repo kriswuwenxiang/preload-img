@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <title>图片预加载-无序加载</title>
+  <title>图片预加载-有序</title>
   <style>
     html, body {
       margin: 0;
@@ -58,34 +58,35 @@
   <script src="./js/jquery.min.js"></script>
   <script src="./js/preload.js"></script>
   <script>
-    var imgs = [];// 加载图片路径数组
+    var imgs = []; //加载图片路径数组
     for(var i=1; i<=4; i++) {
       imgs.push('./img/bg/'+ i +'.jpg');
     }
 
-    var index = 0,// 当前显示第index张图片
-        len = imgs.length,// 总的图片个数
-        $curTotal = $('#curTotal');// 当前图片/总图片数
+    var index = 0, //当前显示第index张图片
+        len = imgs.length, //总的图片个数
+        $curTotal = $('#curTotal'), //当前图片/总图片数
+        $progress = $('.progress'); //进度
+
+    $.preload(imgs,{
+      eachfun: function(count) {
+        $progress.text(Math.round((count + 1) / len * 100) + '%');
+      },
+      allfun: function() {
+        $progress.hide();
+        $curTotal.text('1/' + len);
+      }
+    });
 
     $('.box a').on('click', function(event) {
-      event.preventDefault();// 阻止a标签默认的行为
-      if ($(this).data('btn') === 'prev') {// 上一页
+      event.preventDefault(); //阻止a标签默认的行为
+      if ($(this).data('btn') === 'prev') { //上一页
         index = Math.max(0, --index);
       } else {// 下一页
         index = Math.min(len - 1, ++index);
       }
       $curTotal.text((index + 1) + '/' + len);
-      $('img').attr('src', imgs[index]);//替换图片
-    });
-
-    $.preload(imgs,{
-      each: function(count) {
-        $('.progress').text(Math.round((count + 1) / len * 100) + '%');
-      },
-      all: function() {
-        $('.progress').hide();
-        $curTotal.text('1/' + len);
-      }
+      $('img').attr('src', imgs[index]); //替换图片
     });
   </script>
 </body>
