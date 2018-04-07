@@ -60,7 +60,7 @@
   }
 
   $.extend({
-    preload: function(imgs, opts) {
+    preload: function(imgs, opts) { //方法封装到jQuery
       new PreLoad(imgs, opts);
     }
   });
