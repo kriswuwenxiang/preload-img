@@ -56,7 +56,7 @@
   <script src="js/preload.js"></script>
   <script>
     var imgs = []; //加载图片路径数组
-    for(var i=1; i<=129; i++) {
+    for(var i=1; i<=36; i++) {
       imgs.push('./img/qq/'+ i +'.gif');
     }
 
@@ -69,7 +69,7 @@
       event.stopPropagation(); //阻止冒泡事件
       $panel.show();
       $.preload(imgs, {
-        all: function() {
+        allfun: function() {
           var html = "";
           html += '<ul class="list">';
           for(var i=0; i<len; i++) {
@@ -92,7 +92,7 @@
     $(document).on('click', function() {
       $panel.click(function() {
         return false;
-      })
+      });
       $panel.hide();
     });
   </script>
